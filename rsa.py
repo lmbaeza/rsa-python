@@ -49,7 +49,7 @@ class RSA:
 
 if __name__ == '__main__':
     rsa = RSA(DEBUG=True)
-    text = "I'm Luis Miguel Baez"
+    text = "Message to encrypt with RSA"
     cipher = rsa.encrypt(text)
     print("Cipher:", cipher, "\n\n")
     decripted_message = rsa.decript(cipher)
