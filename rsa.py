@@ -37,7 +37,7 @@ class RSA:
             # ci = (mi**e) % n
         return cipher
     
-    def decript(self, cipher) :
+    def decrypt(self, cipher) :
         sz = len(cipher)
         message = ""
         for i in range(sz):
@@ -52,6 +52,6 @@ if __name__ == '__main__':
     text = "Message to encrypt with RSA"
     cipher = rsa.encrypt(text)
     print("Cipher:", cipher, "\n\n")
-    decripted_message = rsa.decript(cipher)
-    print("Decripted Message:", decripted_message)
+    decrypted_message = rsa.decrypt(cipher)
+    print("Decrypted Message:", decrypted_message)
 
