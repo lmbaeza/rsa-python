@@ -14,9 +14,8 @@ def fastpow(x, y, p):
         x = (x * x) % p
     return res
 
-
 class RSA:
-    def __init__(self, bits=112, DEBUG=False):
+    def __init__(self, bits=1024, DEBUG=False):
         self.p = Crypto.Util.number.getPrime(bits, randfunc=Crypto.Random.get_random_bytes)
         self.q = Crypto.Util.number.getPrime(bits, randfunc=Crypto.Random.get_random_bytes)
         self.n = self.p*self.q
@@ -32,38 +31,28 @@ class RSA:
             ))
 
     def encrypt(self, message):
-        sz = len(message)
-        cipher = [0]*sz
-        for i in range(sz):
-            ascii = ord(message[i]) # Ascii code of message[i]
-            cipher[i] = fastpow(ascii, self.e, self.n)
-            # ci = (mi**e) % n
-        # print(cipher)
-        return self.list_to_hex(cipher)
+        m = int(self.text_to_hex(message), 16)
+        cipher = fastpow(m, self.e, self.n)
+        # ci = (mi**e) % n
+        return hex(cipher)[2:]
     
     def decript(self, cipher) :
-        cipher = self.hex_to_list(cipher)
-        sz = len(cipher)
-        message = ""
-        for i in range(sz):
-            ascii = fastpow(cipher[i], self.d, self.n)
-            # mi = (ci**d) % n
-            message += chr(ascii)
-        return message
+        ci = int(cipher, 16)
+        m = fastpow(ci, self.d, self.n)
+        # ci = (mi**e) % n
+        return self.hex_to_text(hex(m)[2:])
 
-    def list_to_hex(self, cipher):
+    def text_to_hex(self, text):
         cipher_hex = ""
-        for value in cipher:
-            number = hex(value)[2:]
-            diff = self.bits//2 - len(number)
-            number = "0"*diff + number
+        for ch in text:
+            number = hex(ord(ch))[2:]
             cipher_hex += number
         return cipher_hex
 
-    def hex_to_list(self, cipher_hex):
-        cipher_list = []
-        for i in range(0, len(cipher_hex), self.bits//2):
-            cipher_list.append(int(cipher_hex[i: i+self.bits//2], 16))
+    def hex_to_text(self, cipher_hex):
+        cipher_list = ""
+        for i in range(0, len(cipher_hex), 2):
+            cipher_list += chr(int(cipher_hex[i: i+2], 16))
         return cipher_list
     
 
@@ -71,6 +60,6 @@ if __name__ == '__main__':
     rsa = RSA(DEBUG=True)
     text = "Message to encrypt with RSA"
     cipher = rsa.encrypt(text)
-    print("Cipher:", cipher, "\n\n")
+    print("Cipher:", cipher, "\n")
     decripted_message = rsa.decript(cipher)
     print("Decripted Message:", decripted_message)
